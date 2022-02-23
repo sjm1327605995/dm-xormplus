@@ -552,6 +552,7 @@ func (db *dm) IsReserved(name string) bool {
 	return ok
 }
 
+
 func (db *dm) Quote(name string) string {
 	return "\"" + name + "\""
 }
