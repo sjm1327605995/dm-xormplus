@@ -497,6 +497,8 @@ var (
 	}
 )
 
+var schema string
+
 type dm struct {
 	core.Base
 }
@@ -797,8 +799,16 @@ func (db *dm) GetTables() ([]*core.Table, error) {
 
 func (db *dm) GetIndexes(tableName string) (map[string]*core.Index, error) {
 	args := []interface{}{tableName}
-	s := "SELECT t.column_name,i.uniqueness,i.index_name FROM user_ind_columns t,user_indexes i " +
-		"WHERE t.index_name = i.index_name and t.table_name = i.table_name and t.table_name =:1"
+	var s string
+	if schema == "" {
+		s = "SELECT t.column_name,i.uniqueness,i.index_name FROM user_ind_columns t,user_indexes i " +
+			"WHERE t.index_name = i.index_name and t.table_name = i.table_name and t.table_name =:1"
+	} else {
+		s = fmt.Sprintf(
+			"SELECT t.column_name,i.uniqueness,i.index_name FROM user_ind_columns t,user_indexes i "+
+				"WHERE t.index_name = i.index_name and t.table_name = i.table_name and table_owner = '%s' t.table_name =:1", schema)
+	}
+
 	db.LogSQL(s, args)
 
 	rows, err := db.DB().Query(s, args...)
@@ -930,6 +940,8 @@ func (cfg *gdmDriver) Parse(driverName, dataSourceName string) (*core.Uri, error
 		switch names[i] {
 		case "dbname":
 			db.DbName = match
+		case "schema":
+			schema = match
 		}
 	}
 	if db.DbName == "" {
