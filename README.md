@@ -1,6 +1,6 @@
 # dm-xormplus
 添加以后让xormplus支持达梦数据库
-
+高版本的的golang，导入的xormplus效果不通，兼容的xormplus版本较低
 # 引入方法
 ```go
 package main
