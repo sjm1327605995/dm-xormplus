@@ -941,14 +941,13 @@ func (cfg *gdmDriver) Parse(driverName, dataSourceName string) (*core.Uri, error
 		case "dbname":
 			db.DbName = match
 		default:
-			if strings.Contains(names[i], "&&") {
-				arr := strings.Split(names[i], "&&")
-				for _, v := range arr {
-					if strings.Contains(v, "schema=") {
-						schema = strings.ReplaceAll(v, "schema=", "")
-					}
+			arr := strings.Split(names[i], "&&")
+			for _, v := range arr {
+				if strings.Contains(v, "schema=") {
+					schema = strings.ReplaceAll(v, "schema=", "")
 				}
 			}
+
 		}
 
 	}
