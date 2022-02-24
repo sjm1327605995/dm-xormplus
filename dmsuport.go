@@ -511,7 +511,7 @@ func (db *dm) SqlType(c *core.Column) string {
 	var res string
 	switch t := c.SQLType.Name; t {
 	case core.Bit, core.TinyInt, core.SmallInt, core.MediumInt, core.Int, core.Integer, core.BigInt, core.Bool, core.Serial, core.BigSerial:
-		res = "NUMBER"
+		res = "BIGINT"
 	case core.Binary, core.VarBinary, core.Blob, core.TinyBlob, core.MediumBlob, core.LongBlob, core.Bytea:
 		return core.Blob
 	case core.Time, core.DateTime, core.TimeStamp:
@@ -551,7 +551,6 @@ func (db *dm) IsReserved(name string) bool {
 	_, ok := dmReservedWords[name]
 	return ok
 }
-
 
 func (db *dm) Quote(name string) string {
 	return "\"" + name + "\""
