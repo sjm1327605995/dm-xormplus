@@ -940,10 +940,19 @@ func (cfg *gdmDriver) Parse(driverName, dataSourceName string) (*core.Uri, error
 		switch names[i] {
 		case "dbname":
 			db.DbName = match
-		case "schema":
-			schema = match
+		default:
+			if strings.Contains(names[i], "&&") {
+				arr := strings.Split(names[i], "&&")
+				for _, v := range arr {
+					if strings.Contains(v, "schema=") {
+						schema = strings.ReplaceAll(v, "schema=", "")
+					}
+				}
+			}
 		}
+
 	}
+
 	if db.DbName == "" {
 		return nil, errors.New("dbname is empty")
 	}
