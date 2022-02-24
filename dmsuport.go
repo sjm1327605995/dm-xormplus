@@ -627,7 +627,13 @@ func (db *dm) IndexCheckSql(tableName, idxName string) (string, []interface{}) {
 
 func (db *dm) TableCheckSql(tableName string) (string, []interface{}) {
 	args := []interface{}{tableName}
-	return `SELECT table_name FROM user_tables WHERE table_name = :1`, args
+	if schema == "" {
+		return `select table_name  from dba_tables  where table_name = :1`, args
+	} else {
+		args = append(args, schema)
+		return `select table_name  from dba_tables  where table_name = :1 and owner= : 2 `, args
+	}
+
 }
 
 func (db *dm) MustDropTable(tableName string) error {
@@ -941,7 +947,7 @@ func (cfg *gdmDriver) Parse(driverName, dataSourceName string) (*core.Uri, error
 		case "dbname":
 			db.DbName = match
 		default:
-			arr := strings.Split(names[i], "&&")
+			arr := strings.Split(match, "&&")
 			for _, v := range arr {
 				if strings.Contains(v, "schema=") {
 					schema = strings.ReplaceAll(v, "schema=", "")
